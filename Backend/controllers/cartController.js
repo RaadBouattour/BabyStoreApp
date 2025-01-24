@@ -4,6 +4,9 @@ const Product = require("../models/Product");
 // Add an item to the cart
 exports.addToCart = async (req, res) => {
     try {
+      // Debugging: Log the headers and request body
+    console.log("DEBUG: Headers received:", req.headers);
+    console.log("DEBUG: Body received:", req.body);
       const { productId, quantity, price } = req.body;
   
       // Debugging: Log incoming data
@@ -36,6 +39,8 @@ exports.addToCart = async (req, res) => {
   
       // Debugging: Log cart data after saving
       console.log("Cart After Save:", cart);
+
+      
   
       res.status(200).json({ message: "Product added to cart", cart });
     } catch (err) {
