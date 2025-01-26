@@ -5,6 +5,7 @@ const {
   addProduct,
   updateProduct,
   deleteProduct,
+  getProductsByCategory,
 } = require("../controllers/productController");
 const auth = require("../middlewares/auth");
 const multer = require("multer");
@@ -38,6 +39,8 @@ router.put("/:id", auth, upload.single("image"), async (req, res, next) => {
     next(err);
   }
 });
+
+router.get("/category", getProductsByCategory); // Add this route
 
 // Admin: Delete a product
 router.delete("/:id", auth, async (req, res, next) => {

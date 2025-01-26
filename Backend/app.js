@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/database");
 const cors = require("cors");
+const notificationRoutes = require('./routes/notifications');
 
 
 require("dotenv").config();
@@ -32,6 +33,7 @@ app.use("/orders", orderRoutes);
 app.use("/articles", articleRoutes);
 app.use("/users", userRoutes); // Added user routes
 app.use("/health", healthRoute); // Health check route
+app.use('/notifications', notificationRoutes);
 
 // Server start
 const PORT = process.env.PORT || 5000;

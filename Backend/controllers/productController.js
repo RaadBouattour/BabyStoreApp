@@ -107,3 +107,49 @@ exports.deleteProduct = async (req, res) => {
     }
   };
   
+// Get products by category
+exports.getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.query;
+
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+
+    // Find products where the category matches the query
+    const products = await Product.find({ category: category });
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products found in this category" });
+    }
+
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.query;
+
+    if (!category) {
+      return res.status(400).json({ message: "Category is required." });
+    }
+
+    console.log("DEBUG: Category received:", category);
+
+    // Use a case-insensitive regex to match the category
+    const products = await Product.find({ category: { $regex: new RegExp(`^${category}$`, "i") } });
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: `No products found for category: ${category}` });
+    }
+
+    res.json(products);
+  } catch (err) {
+    console.error("ERROR: Fetching products by category failed:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
