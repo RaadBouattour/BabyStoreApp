@@ -2,7 +2,6 @@ const express = require("express");
 const {
   placeOrder,
   getUserOrders,
-  markOrderAsPaid,
   updateDeliveryStatus,
   getAllOrders, // Added this function for admin to fetch all orders
 } = require("../controllers/orderController");
@@ -19,10 +18,7 @@ router.get("/", auth, getUserOrders);
 // Get all orders (Admin only)
 router.get("/all", auth, getAllOrders); // New route for admin to fetch all orders
 
-// Mark an order as paid (Admin updates payment status)
-//router.put("/:id/markAsPaid", auth, markOrderAsPaid);
 
-// Update delivery status (Admin only)
+// Admin: Update order delivery status
 router.put("/:id/status", auth, updateDeliveryStatus);
-
 module.exports = router;

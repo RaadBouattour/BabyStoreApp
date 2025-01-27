@@ -10,9 +10,13 @@ const OrderSchema = new mongoose.Schema({
     },
   ],
   orderTotal: { type: Number, required: true },
-  isPaid: { type: Boolean, default: false }, // Payment on delivery
-  orderDate: { type: Date, default: Date.now },
-  deliveryStatus: { type: String, default: "Pending" }, // "Pending", "Delivered", etc.
+  fullName: { type: String, required: true },
+  email: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
+  address: { type: String, required: true },
+  deliveryStatus: { type: String, default: "Pending" },
+  isPaid: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model("Order", OrderSchema);

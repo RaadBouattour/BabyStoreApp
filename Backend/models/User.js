@@ -1,11 +1,14 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
+  phoneNumber: { type: String, required: false }, // Optional initially
+  address: { type: String, required: false }, // Optional initially
   isAdmin: { type: Boolean, default: false },
-  blocked: { type: Boolean, default: false },// Add blocked field
+  blocked: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });
 
