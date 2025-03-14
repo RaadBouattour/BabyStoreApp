@@ -1,14 +1,14 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-// Get all users (excluding admins)
+
 exports.getAllUsers = async (req, res) => {
   if (!req.user.isAdmin) {
     return res.status(403).json({ message: "Access denied" });
   }
 
   try {
-    const users = await User.find({ isAdmin: false }).select("-password"); // Exclude password
+    const users = await User.find({ isAdmin: false }).select("-password"); 
     res.status(200).json(users);
   } catch (err) {
     console.error("Error fetching users:", err);
@@ -16,12 +16,12 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// Update user details
+
 exports.updateUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password, phoneNumber, address } = req.body;
 
-    // Determine which user to update
+    
     const userId = req.user.isAdmin ? req.params.id : req.user.id;
 
     const user = await User.findById(userId);
@@ -29,7 +29,7 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check for email uniqueness if it's being updated
+    
     if (email && email !== user.email) {
       const emailExists = await User.findOne({ email });
       if (emailExists) {
@@ -38,9 +38,10 @@ exports.updateUser = async (req, res) => {
       user.email = email;
     }
 
-    // Update fields if provided
+    
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
+    if (email) user.email = email;
     if (phoneNumber) user.phoneNumber = phoneNumber;
     if (address) user.address = address;
     if (password) {
@@ -56,7 +57,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// Delete a user (Admin only)
+
 exports.deleteUser = async (req, res) => {
   if (!req.user.isAdmin) {
     return res.status(403).json({ message: "Access denied" });
@@ -75,7 +76,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// Block or unblock a user (Admin only)
+
 exports.blockOrUnblockUser = async (req, res) => {
   if (!req.user.isAdmin) {
     return res.status(403).json({ message: "Access denied" });
@@ -89,7 +90,7 @@ exports.blockOrUnblockUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.blocked = blocked; // Update the blocked status
+    user.blocked = blocked; 
     await user.save();
 
     res.status(200).json({

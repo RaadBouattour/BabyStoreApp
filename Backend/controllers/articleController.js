@@ -1,6 +1,5 @@
 const Article = require("../models/Article");
 
-// Get all articles
 exports.getAllArticles = async (req, res) => {
   try {
     const articles = await Article.find();

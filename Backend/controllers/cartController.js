@@ -1,15 +1,15 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 
-// Add an item to the cart
+
 exports.addToCart = async (req, res) => {
     try {
-      // Debugging: Log the headers and request body
+      
     console.log("DEBUG: Headers received:", req.headers);
     console.log("DEBUG: Body received:", req.body);
       const { productId, quantity, price } = req.body;
   
-      // Debugging: Log incoming data
+      
       console.log("Request Body:", req.body);
   
       let cart = await Cart.findOne({ userId: req.user.id });
@@ -21,23 +21,23 @@ exports.addToCart = async (req, res) => {
         });
       }
   
-      // Check if the product already exists in the cart
+      
       const productIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
   
       if (productIndex > -1) {
-        // Update the quantity of the existing product
+        
         cart.items[productIndex].quantity += quantity;
       } else {
-        // Add the new product to the cart
-        cart.items.push({ productId, quantity, price }); // Ensure price is being added here
+        
+        cart.items.push({ productId, quantity, price }); 
       }
   
-      // Debugging: Log cart data before saving
+      
       console.log("Cart Before Save:", cart);
   
       await cart.save();
   
-      // Debugging: Log cart data after saving
+      
       console.log("Cart After Save:", cart);
 
       
@@ -51,7 +51,7 @@ exports.addToCart = async (req, res) => {
   
   
 
-// Get the user's cart
+
 exports.getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.user.id }).populate("items.productId", "name price");
@@ -63,7 +63,7 @@ exports.getCart = async (req, res) => {
   }
 };
 
-// Remove an item from the cart
+
 exports.removeFromCart = async (req, res) => {
   const { productId } = req.params;
 
@@ -71,7 +71,7 @@ exports.removeFromCart = async (req, res) => {
     const cart = await Cart.findOne({ userId: req.user.id });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    // Filter out the item to be removed
+    
     cart.items = cart.items.filter((item) => item.productId.toString() !== productId);
     await cart.save();
 
@@ -81,7 +81,7 @@ exports.removeFromCart = async (req, res) => {
   }
 };
 
-// Clear the cart
+
 exports.clearCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.user.id });

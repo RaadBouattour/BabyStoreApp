@@ -5,8 +5,8 @@ const UserSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-  phoneNumber: { type: String, required: false }, // Optional initially
-  address: { type: String, required: false }, // Optional initially
+  phoneNumber: { type: String, required: false }, 
+  address: { type: String, required: false }, 
   isAdmin: { type: Boolean, default: false },
   blocked: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },

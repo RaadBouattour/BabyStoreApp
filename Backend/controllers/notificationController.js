@@ -1,6 +1,6 @@
 const Notification = require('../models/Notification');
 
-// Create a new notification (Admin only)
+
 exports.createNotification = async (req, res) => {
   if (!req.user.isAdmin) {
     return res.status(403).json({ message: 'Access denied' });
@@ -21,12 +21,12 @@ exports.createNotification = async (req, res) => {
   }
 };
 
-// Get the count of unread notifications for the logged-in user
+
 exports.getUnreadNotificationsCount = async (req, res) => {
     try {
       const count = await Notification.countDocuments({
         userId: req.user.id,
-        isRead: false, // Only count unread notifications
+        isRead: false, 
       });
   
       res.status(200).json({ count });
@@ -36,7 +36,7 @@ exports.getUnreadNotificationsCount = async (req, res) => {
     }
   };
 
-// Get all notifications for the logged-in user
+
 exports.getNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({ userId: req.user.id }).sort({ createdAt: -1 });
@@ -46,7 +46,7 @@ exports.getNotifications = async (req, res) => {
   }
 };
 
-// Mark a notification as read
+
 exports.markNotificationAsRead = async (req, res) => {
   try {
     const { id } = req.params;
