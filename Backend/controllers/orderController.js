@@ -102,17 +102,32 @@ exports.getAllOrders = async (req, res) => {
   }
 
   try {
-    
+    // Fetch orders with the correct data
     const orders = await Order.find()
-      .populate("userId", "firstName lastName email phoneNumber address") 
-      .populate("items.productId", "name price"); 
+      .populate("items.productId", "name price") // Populate product details
+      .select("-__v"); // Exclude unwanted fields
 
-    res.status(200).json(orders);
+    // Return orders with order-specific information
+    res.status(200).json(
+      orders.map((order) => ({
+        _id: order._id,
+        fullName: order.fullName, // ✅ Use order-specific name
+        email: order.email, // ✅ Use order-specific email
+        phoneNumber: order.phoneNumber, // ✅ Use order-specific phone
+        address: order.address, // ✅ Use order-specific address
+        orderTotal: order.orderTotal,
+        items: order.items,
+        deliveryStatus: order.deliveryStatus,
+        isPaid: order.isPaid,
+        createdAt: order.createdAt,
+      }))
+    );
   } catch (err) {
     console.error("Error fetching orders:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
+
 
 
 exports.getUserOrders = async (req, res) => {

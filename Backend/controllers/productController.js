@@ -22,43 +22,66 @@ exports.getProductById = async (req, res) => {
   }
 };
 
+const multer = require("multer");
+
+// Configure Multer storage (to accept images from the phone)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// Middleware for image upload
+exports.uploadImage = upload.single("image");
 
 exports.addProduct = async (req, res) => {
-    if (!req.user.isAdmin) return res.status(403).json({ message: "Access denied" });
-  
-    try {
-      const { name, description, price, stock, category } = req.body;
-  
-      
-      const existingProduct = await Product.findOne({ name });
-      if (existingProduct) {
-        return res.status(400).json({ message: "A product with this name already exists" });
-      }
-  
-      
-      if (!req.file) {
-        return res.status(400).json({ message: "Image file is required" });
-      }
-  
-      
-      const result = await cloudinary.uploader.upload(req.file.path);
-  
-      const product = new Product({
-        name,
-        description,
-        price,
-        stock,
-        category,
-        image: result.secure_url, 
-      });
-  
-      await product.save();
-      res.status(201).json({ message: "Product added successfully", product });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: err.message });
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  try {
+    const { name, description, price, stock, category } = req.body;
+
+    // Check if the product already exists
+    const existingProduct = await Product.findOne({ name });
+    if (existingProduct) {
+      return res.status(400).json({ message: "A product with this name already exists" });
     }
-  };
+
+    // Ensure image is provided
+    if (!req.file) {
+      return res.status(400).json({ message: "Image file is required" });
+    }
+
+    // Upload image to Cloudinary
+    const result = await cloudinary.uploader.upload_stream(
+      { resource_type: "image", folder: "products" },
+      async (error, cloudinaryResult) => {
+        if (error) {
+          console.error("Cloudinary upload failed:", error);
+          return res.status(500).json({ message: "Cloudinary upload failed", error });
+        }
+
+        // Save product to database
+        const product = new Product({
+          name,
+          description,
+          price,
+          stock,
+          category,
+          image: cloudinaryResult.secure_url,
+        });
+
+        await product.save();
+        res.status(201).json({ message: "Product added successfully", product });
+      }
+    );
+
+    // Pipe the file buffer to Cloudinary
+    result.end(req.file.buffer);
+  } catch (err) {
+    console.error("Error adding product:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
   
 
   exports.getAllCategories = async (req, res) => {
